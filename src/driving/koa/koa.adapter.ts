@@ -22,51 +22,81 @@ export class KoaAdapter {
       };
     });
 
-    botManagerRouter.post('/refresh-guild-commands', (ctx) => {
-      if (ctx.headers['x-api-key'] !== config.get('authentication.apiKey')) {
-        ctx.status = 401;
+    botManagerRouter.post('/refresh-guild-commands', async (ctx) => {
+      try {
+        if (ctx.headers['x-api-key'] !== config.get('authentication.apiKey')) {
+          ctx.status = 401;
+          ctx.body = {
+            error: {
+              message: 'Unauthorized',
+              code: 'unauthorized',
+            }
+          };
+          return;
+        }
+
+        const guildId = ctx.request.query.guildId;
+
+        if (typeof guildId !== 'string') {
+          ctx.status = 400;
+          ctx.body = {
+            error: {
+              message: 'guildId query parameter is required (right click your server in Discord in developer mode and click "Copy identifier").',
+              code: 'invalid_guild_id',
+            }
+          };
+          return;
+        }
+
+        if (ctx.request.query.empty === 'true') {
+          await this.discordBot.refreshGuildCommands(guildId, true);
+        } else {
+          await this.discordBot.refreshGuildCommands(guildId, false);
+        }
+
+        ctx.status = 200;
+        ctx.body = {
+          message: 'Guild commands refreshed successfully.'
+        };
+      } catch (error) {
+        ctx.status = 500;
         ctx.body = {
           error: {
-            message: 'Unauthorized',
-            code: 'unauthorized',
+            message: 'An error occurred while refreshing guild commands.',
+            code: 'internal_error',
           }
         };
-        return;
       }
-
-      const guildId = ctx.request.query.guildId;
-
-      if (typeof guildId !== 'string') {
-        ctx.status = 400;
-        ctx.body = {
-          error: {
-            message: 'guildId query parameter is required (right click your server in Discord in developer mode and click "Copy identifier").',
-            code: 'invalid_guild_id',
-          }
-        };
-        return;
-      }
-
-      this.discordBot.refreshGuildCommands(guildId);
-
-      ctx.status = 204;
     });
 
-    botManagerRouter.post('/refresh-global-commands', (ctx) => {
-      if (ctx.headers['x-api-key'] !== config.get('authentication.apiKey')) {
-        ctx.status = 401;
+    botManagerRouter.post('/refresh-global-commands', async (ctx) => {
+      try {
+        if (ctx.headers['x-api-key'] !== config.get('authentication.apiKey')) {
+          ctx.status = 401;
+          ctx.body = {
+            error: {
+              message: 'Unauthorized',
+              code: 'unauthorized',
+            }
+          };
+          return;
+        }
+
+        await this.discordBot.refreshGlobalCommands();
+
+        ctx.status = 200;
+        ctx.body = {
+          message: 'Global commands refreshed successfully.'
+        };
+      } catch (error) {
+        ctx.status = 500;
         ctx.body = {
           error: {
-            message: 'Unauthorized',
-            code: 'unauthorized',
+            message: 'An error occurred while refreshing global commands.',
+            code: 'internal_error',
           }
         };
-        return;
       }
-
-      this.discordBot.refreshGlobalCommands();
-
-      ctx.status = 204;
     });
 
     this.app.use(botManagerRouter.routes());
