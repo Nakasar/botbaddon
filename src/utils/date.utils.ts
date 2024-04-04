@@ -1,7 +1,7 @@
 const FRENCH_DAYS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 const FRENCH_MONTHS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
-const MOUVELIAN_SEASONS = ['Zéphyr', 'Phénix', 'Scion', 'Colosse'];
+export const MOUVELIAN_SEASONS = ['Zéphyr', 'Phénix', 'Scion', 'Colosse'];
 
 /**
  *

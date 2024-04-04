@@ -5,7 +5,9 @@
   "services": {
     "discord": {
       "token": "SERVICES__DISCORD__TOKEN",
-      "clientId": "application-id-goes-here"
+      "clientId": "application-id-goes-here",
+      "guildId": "SERVICES__DISCORD__GUILD_ID",
+      "dateChannelId": "SERVICES__DISCORD__DATE_CHANNEL_ID"
     },
     "mongo": {
       "url": "SERVICES__MONGO__URL",

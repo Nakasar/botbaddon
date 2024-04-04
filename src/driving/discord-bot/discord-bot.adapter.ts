@@ -8,10 +8,12 @@ import {
   SlashCommandBuilder
 } from 'discord.js';
 import config from 'config';
+import cron from 'node-cron';
 import {BonbonCommand} from "./commands/bonbon.command";
 import logger from "../../logger";
 import {RollCommand} from "./commands/roll.command";
 import {DateCommand} from "./commands/date.command";
+import {gregorianToMouvelian, MOUVELIAN_SEASONS} from "../../utils/date.utils";
 
 export interface Command {
   name: string;
@@ -22,13 +24,19 @@ export interface Command {
 export class DiscordBotAdapter {
   private restClient = new REST().setToken(config.get('services.discord.token'));
   private client: Client = new Client({
-    intents: [GatewayIntentBits.Guilds],
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.MessageContent,
+    ],
   });
   private commands = [
     new BonbonCommand(),
     new RollCommand(),
     new DateCommand(),
   ];
+  private updateDateChannelCron?: cron.ScheduledTask;
 
   async start() {
     const commandsMap = new Collection<string, Command>();
@@ -68,10 +76,45 @@ export class DiscordBotAdapter {
     });
 
     await this.client.login(config.get('services.discord.token'));
+
+    this.updateDateChannelCron = cron.schedule("0 * * * *", async () => {
+      try {
+        const date = gregorianToMouvelian(new Date());
+        const dateChannelName = `${date.day} ${
+          MOUVELIAN_SEASONS[date.season]
+        } ${date.year}`;
+
+        logger.info("Update date channel name.");
+        if (!(this.client.uptime && this.client.uptime > 10000)) {
+          logger.info("Bot is offline.");
+          return;
+        }
+
+        const guild = await this.client.guilds.fetch(config.get('services.discord.guildId'));
+        if (!guild) {
+          logger.warn('Guild not found (check services.discord.guildId config).')
+          return;
+        }
+        const channel = await guild.channels.fetch(config.get('services.discord.dateChannelId'));
+        if (!channel) {
+          logger.warn('Channel for date not found (check services.discord.dateChannelId config).')
+          return;
+        }
+        await channel
+          .setName(dateChannelName)
+          .then((newChannel) =>
+            logger.info(`Channel's new name is ${newChannel.name}`)
+          );
+      } catch (error) {
+        logger.info("Could not update channel name.");
+        logger.error(error);
+      }
+    });
   }
 
   async stop() {
     await this.client.destroy();
+    this.updateDateChannelCron?.stop();
   }
 
   async refreshGuildCommands(guildId: string, empty = false) {
