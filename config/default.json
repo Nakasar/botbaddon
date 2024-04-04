@@ -1,0 +1,18 @@
+{
+  "server": {
+    "port": 80
+  },
+  "services": {
+    "discord": {
+      "token": "SERVICES__DISCORD__TOKEN",
+      "clientId": "application-id-goes-here"
+    },
+    "mongo": {
+      "url": "SERVICES__MONGO__URL",
+      "database": "SERVICES__MONGO__DATABASE"
+    }
+  },
+  "authentication": {
+    "apiKey": "openssl rand -base64 20"
+  }
+}

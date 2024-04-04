@@ -1,0 +1,18 @@
+{
+  "server": {
+    "port": "PORT"
+  },
+  "services": {
+    "discord": {
+      "token": "SERVICES__DISCORD__TOKEN",
+      "clientId": "SERVICES__DISCORD__TOKEN__CLIENT_ID"
+    },
+    "mongo": {
+      "url": "mongodb://localhost:27017",
+      "database": "botbaddon"
+    }
+  },
+  "authentication": {
+    "apiKey": "AUTHENTICATION__API_KEY"
+  }
+}

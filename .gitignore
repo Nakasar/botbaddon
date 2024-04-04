@@ -1,0 +1,12 @@
+# Node
+node_modules/
+
+# Config
+config/local.json
+
+# IDE
+.idea/
+.vscode/
+
+# Artifacts
+dist/
