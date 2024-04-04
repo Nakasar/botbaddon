@@ -15,6 +15,13 @@ export class KoaAdapter {
   async start() {
     const botManagerRouter = new Router();
 
+    botManagerRouter.get('/health', (ctx) => {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'ok',
+      };
+    });
+
     botManagerRouter.post('/refresh-guild-commands', (ctx) => {
       if (ctx.headers['x-api-key'] !== config.get('authentication.apiKey')) {
         ctx.status = 401;

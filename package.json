@@ -2,7 +2,7 @@
   "name": "@nakasar/botbaddon",
   "version": "4.0.0",
   "description": "Un bot pour la communauté francophone de rôlistes GuildWars 2.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/index.js",
