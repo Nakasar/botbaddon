@@ -1,4 +1,10 @@
-import {ChatInputCommandInteraction, ColorResolvable, EmbedBuilder, SlashCommandBuilder} from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  ColorResolvable,
+  EmbedBuilder,
+  SharedSlashCommand,
+  SlashCommandBuilder
+} from "discord.js";
 import {Command} from "../discord-bot.adapter";
 import logger from "../../../logger";
 import {
@@ -130,7 +136,7 @@ export class DateCommand implements Command {
     }
   }
 
-  build(): SlashCommandBuilder {
+  build(): SharedSlashCommand {
     return new SlashCommandBuilder()
       .setName(this.name)
       .addSubcommand(subcommand =>

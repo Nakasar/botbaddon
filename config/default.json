@@ -12,6 +12,10 @@
     "mongo": {
       "url": "SERVICES__MONGO__URL",
       "database": "SERVICES__MONGO__DATABASE"
+    },
+    "elevenlabs": {
+      "apiKey": "SERVIcES__ELEVENLABS__API_KEY",
+      "voiceId": "uVKHymY7OYMd6OailpG5"
     }
   },
   "authentication": {

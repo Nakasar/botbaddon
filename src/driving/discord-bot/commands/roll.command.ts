@@ -1,5 +1,5 @@
 import { Command } from "../discord-bot.adapter";
-import {ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder} from "discord.js";
+import {ChatInputCommandInteraction, EmbedBuilder, SharedSlashCommand, SlashCommandBuilder} from "discord.js";
 import c from "config";
 
 export class RollCommand implements Command {
@@ -10,7 +10,7 @@ export class RollCommand implements Command {
     const comment = interaction.options.getString('commentaire');
 
     if (!expression) {
-      await interaction.reply({ content: 'Expression de lancer invalide.', ephemeral: true });
+      await interaction.reply({ content: 'Expression de lancer invalide.', flags: ["Ephemeral"] });
       return;
     }
 
@@ -39,7 +39,7 @@ export class RollCommand implements Command {
     })
   }
 
-  build(): SlashCommandBuilder {
+  build(): SharedSlashCommand {
     return new SlashCommandBuilder()
       .setName(this.name)
       .addStringOption(option =>

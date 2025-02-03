@@ -4,7 +4,7 @@ import {
   Events,
   GatewayIntentBits,
   Interaction, REST,
-  Routes,
+  Routes, SharedSlashCommand,
   SlashCommandBuilder
 } from 'discord.js';
 import config from 'config';
@@ -14,11 +14,12 @@ import logger from "../../logger";
 import {RollCommand} from "./commands/roll.command";
 import {DateCommand} from "./commands/date.command";
 import {gregorianToMouvelian, MOUVELIAN_SEASONS} from "../../utils/date.utils";
+import {AiCommand} from "./commands/ai.command";
 
 export interface Command {
   name: string;
   execute(interaction: Interaction): Promise<void>;
-  build(): SlashCommandBuilder;
+  build(): SharedSlashCommand;
 }
 
 export class DiscordBotAdapter {
@@ -29,12 +30,14 @@ export class DiscordBotAdapter {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMembers,
       GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildVoiceStates,
     ],
   });
   private commands = [
     new BonbonCommand(),
     new RollCommand(),
     new DateCommand(),
+    new AiCommand(),
   ];
   private updateDateChannelCron?: cron.ScheduledTask;
 
@@ -59,18 +62,22 @@ export class DiscordBotAdapter {
 
       if (!command) {
         logger.error(`No command matching ${interaction.commandName} was found.`);
-        await interaction.reply({ content: 'This command does not exist!', ephemeral: true });
+        await interaction.reply({ content: 'This command does not exist!', flags: ["Ephemeral"] });
         return;
       }
 
       try {
         await command.execute(interaction);
-      } catch (error) {
-        logger.error(error);
+      } catch (error: any) {
+        logger.error('Failed to execute command', { error: {
+          message: error.message,
+            name: error.name,
+            stack: error.stack,
+          } });
         if (interaction.replied || interaction.deferred) {
-          await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+          await interaction.followUp({ content: 'There was an error while executing this command!', flags: ["Ephemeral"] });
         } else {
-          await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+          await interaction.reply({ content: 'There was an error while executing this command!', flags: ["Ephemeral"] });
         }
       }
     });

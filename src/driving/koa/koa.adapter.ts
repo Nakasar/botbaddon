@@ -59,6 +59,7 @@ export class KoaAdapter {
           message: 'Guild commands refreshed successfully.'
         };
       } catch (error) {
+        logger.error(error);
         ctx.status = 500;
         ctx.body = {
           error: {

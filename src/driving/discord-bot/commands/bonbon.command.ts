@@ -1,4 +1,10 @@
-import {ChatInputCommandInteraction, ColorResolvable, EmbedBuilder, SlashCommandBuilder} from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  ColorResolvable,
+  EmbedBuilder,
+  SharedSlashCommand,
+  SlashCommandBuilder
+} from "discord.js";
 import {Command} from "../discord-bot.adapter";
 
 const colors: { name: string; code: ColorResolvable }[] = [
@@ -66,7 +72,7 @@ export class BonbonCommand implements Command {
     });
   }
 
-  build(): SlashCommandBuilder {
+  build(): SharedSlashCommand {
     return new SlashCommandBuilder()
       .setName(this.name)
       .setDescription("Piocher un bonbon aux effets particuliers !");

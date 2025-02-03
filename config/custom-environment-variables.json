@@ -12,6 +12,10 @@
     "mongo": {
       "url": "mongodb://localhost:27017",
       "database": "botbaddon"
+    },
+    "elevenlabs": {
+      "apiKey": "SERVICES__ELEVENLABS__API_KEY",
+      "voiceId": "SERVICES__ELEVENLABS__VOICE_ID"
     }
   },
   "authentication": {
