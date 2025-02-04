@@ -16,6 +16,10 @@
     "elevenlabs": {
       "apiKey": "SERVICES__ELEVENLABS__API_KEY",
       "voiceId": "SERVICES__ELEVENLABS__VOICE_ID"
+    },
+    "avatar": {
+      "agentId": "SERVICES__AVATAR__AGENT_ID",
+      "agentSecret": "SERVICES__AVATAR__AGENT_SECRET"
     }
   },
   "authentication": {
