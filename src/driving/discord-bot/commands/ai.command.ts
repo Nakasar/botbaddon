@@ -130,7 +130,43 @@ export class Instance {
     const nextMessage = this.messages.find(message => message.messageId === this.messageId && message.sequence === this.sequence && message.type === 'SAY');
 
     if (!nextMessage) {
-      logger.debug('FINISHED PLAYING AUDIO');
+      if (!this.messages.find(
+        (message) => message.messageId === this.messageId && (message.sequence ?? 0) > this.sequence,
+      )) {
+        logger.debug('FINISHED PLAYING AUDIO');
+        await fetch(
+          `https://api.avatar.lu/agents/${this.agentId}/status`,
+          {
+            method: 'POST',
+            headers: {
+              'x-api-key': `${this.agentId}:${config.get('services.avatar.agentSecret')}`,
+              'content-type': 'application/json',
+            },
+            body: JSON.stringify({
+              status: 'IDLE',
+            }),
+          },
+        ).then(() => {
+          console.log('Marked connector as IDLE');
+        });
+        return;
+      }
+
+      return;
+    }
+
+    logger.debug('PLAYING MESSAGE', { nextMessage });
+
+    if (nextMessage.audio?.src) {
+      const audioSource = createAudioResource(nextMessage.audio.src);
+
+      this.player.play(audioSource);
+      this.sequence++;
+    } else if (!nextMessage.final) {
+      this.sequence++;
+      this.playNextMessage();
+    } else {
+      this.sequence++;
       await fetch(
         `https://api.avatar.lu/agents/${this.agentId}/status`,
         {
@@ -147,20 +183,6 @@ export class Instance {
         console.log('Marked connector as IDLE');
       });
       return;
-    }
-
-    logger.debug('PLAYING MESSAGE', { nextMessage });
-
-    if (nextMessage.audio?.src) {
-      const audioSource = createAudioResource(nextMessage.audio.src);
-
-      this.player.play(audioSource);
-      this.sequence++;
-    } else if (!nextMessage.final) {
-      this.sequence++;
-      this.playNextMessage();
-    } else {
-      this.sequence++;
     }
   }
 }
