@@ -7,7 +7,8 @@
       "token": "SERVICES__DISCORD__TOKEN",
       "clientId": "application-id-goes-here",
       "guildId": "SERVICES__DISCORD__GUILD_ID",
-      "dateChannelId": "SERVICES__DISCORD__DATE_CHANNEL_ID"
+      "dateChannelId": "SERVICES__DISCORD__DATE_CHANNEL_ID",
+      "admins": ["186208105502081025"]
     },
     "mongo": {
       "url": "SERVICES__MONGO__URL",
@@ -15,7 +16,7 @@
     },
     "elevenlabs": {
       "apiKey": "SERVIcES__ELEVENLABS__API_KEY",
-      "voiceId": "uVKHymY7OYMd6OailpG5"
+      "voiceId": "ZKgxwvemTZ5s4dNRUJcv"
     }
   },
   "authentication": {

@@ -27,6 +27,20 @@ export class AiCommand implements Command {
   readonly name = 'ai';
 
   async execute(interaction: ChatInputCommandInteraction) {
+    if (!config.get<string[]>('services.discord.admins').includes(interaction.user.id)) {
+      await interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor('#FF8000')
+            .setTitle("Une voix par délà le voile...")
+            .setDescription(
+              "Abaddon ne vous répond pas..."
+            ),
+        ],
+      });
+      return;
+    }
+
     if (interaction.options.getSubcommand() === 'invoke') {
       if (!interaction.guildId) {
         await interaction.reply({
