@@ -7,6 +7,7 @@ import {
   SlashCommandBuilder
 } from "discord.js";
 import {
+  AudioPlayer,
   AudioPlayerStatus, AudioResource,
   createAudioPlayer,
   createAudioResource,
@@ -18,10 +19,151 @@ import {ElevenLabsClient} from "elevenlabs";
 import logger from "../../../logger";
 import path from "node:path";
 import {Readable} from "node:stream";
+import { WebSocket } from 'ws';
 
 const elevenlabs = new ElevenLabsClient({
   apiKey: config.get('services.elevenlabs.apiKey'), // Defaults to process.env.ELEVENLABS_API_KEY
 });
+
+export class Instance {
+  private socket?: WebSocket;
+  public readonly player: AudioPlayer = createAudioPlayer();
+  private messageId: string | null = null;
+  private messages: Record<string, any>[] = [];
+  private sequence: number = 0;
+
+  constructor(private readonly agentId: string, public channelId: string) {
+    this.player.on(AudioPlayerStatus.AutoPaused, () => {
+      logger.info('Player finished!');
+    });
+
+    this.player.on(AudioPlayerStatus.Playing, () => {
+      logger.info('Player playing!');
+    });
+
+    this.player.on(AudioPlayerStatus.Idle, () => {
+      logger.info('Player idle!');
+      this.playNextMessage();
+    });
+  }
+
+  async connect() {
+    logger.info(`Connecting instance to ${this.channelId}`);
+
+    this.socket = new WebSocket(`wss://api.avatar.lu/agents/${config.get('services.avatar.agentId')}/sockets`);
+
+    this.socket.addEventListener('message', (message) => {
+      try {
+        const event = JSON.parse(message.data.toString());
+
+        switch (event.type) {
+          case 'REQUEST_AUTHENTICATION':
+            logger.info('Authenticating...');
+            this.socket?.send(
+              JSON.stringify({
+                type: 'AUTHENTICATION_RESPONSE',
+                authSecret: config.get('services.avatar.agentSecret'),
+              }),
+            );
+            break;
+          case 'AUTHENTICATION_SUCCESS':
+            logger.info('Authentication successful!');
+            break;
+          case 'INPUT':
+            break;
+          case 'INTERRUPT':
+            this.handleInterruptCommand();
+            logger.info('Received INTERRUPT event', { event });
+            this.player.stop();
+            break;
+          case 'SAY_FILLER':
+            break;
+          case 'SAY':
+            logger.info('Received SAY event', { event });
+            this.handleSayCommand(event);
+            break;
+          default:
+            logger.warn('Received unhandled event', { event });
+            break;
+        }
+      } catch (error: any) {
+        logger.error('Error while handling agent socket event', { error: { message: error.message, stack: error.stack } });
+      }
+    });
+
+    const pingInterval = setInterval(() => {
+      this.socket?.send(JSON.stringify({ type: 'PING' }));
+    }, 25000);
+    this.socket.addEventListener('close', (event) => {
+      console.log('Connection closed', { event });
+
+      clearInterval(pingInterval);
+    });
+  }
+
+  async handleInterruptCommand() {
+    this.messageId = null;
+    this.messages = [];
+    this.sequence = 0;
+    this.player.stop(true);
+  }
+
+  async handleSayCommand(message: Record<string, any>) {
+    if (this.messageId !== message.messageId) {
+      await this.handleInterruptCommand();
+    }
+
+    this.messageId = message.messageId;
+    this.messages.push(message);
+
+    if (this.player.state.status === AudioPlayerStatus.Idle) {
+      await this.playNextMessage();
+    }
+  }
+
+  async playNextMessage() {
+    logger.debug('PLAYING NEXT MESSAGE', { messageId: this.messageId, sequence: this.sequence });
+    if (!this.messageId || this.messages.length === 0) {
+      return;
+    }
+
+    const nextMessage = this.messages.find(message => message.messageId === this.messageId && message.sequence === this.sequence && message.type === 'SAY');
+
+    if (!nextMessage) {
+      logger.debug('FINISHED PLAYING AUDIO');
+      await fetch(
+        `https://api.avatar.lu/agents/${this.agentId}/status`,
+        {
+          method: 'POST',
+          headers: {
+            'x-api-key': `${this.agentId}:${config.get('services.avatar.agentSecret')}`,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'IDLE',
+          }),
+        },
+      ).then(() => {
+        console.log('Marked connector as IDLE');
+      });
+      return;
+    }
+
+    logger.debug('PLAYING MESSAGE', { nextMessage });
+
+    if (nextMessage.audio?.src) {
+      const audioSource = createAudioResource(nextMessage.audio.src);
+
+      this.player.play(audioSource);
+      this.sequence++;
+    } else if (!nextMessage.final) {
+      this.sequence++;
+      this.playNextMessage();
+    } else {
+      this.sequence++;
+    }
+  }
+}
 
 export class AiCommand implements Command {
   readonly name = 'ai';
@@ -79,6 +221,11 @@ export class AiCommand implements Command {
         guildId: interaction.guildId,
         adapterCreator: channel.guild.voiceAdapterCreator,
       });
+
+      const instance = new Instance(config.get('services.avatar.agentId'), channel.id);
+      connection.subscribe(instance.player);
+
+      await instance.connect();
 
       await interaction.reply({
         flags: ["Ephemeral"],

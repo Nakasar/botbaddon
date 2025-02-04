@@ -15,8 +15,12 @@
       "database": "SERVICES__MONGO__DATABASE"
     },
     "elevenlabs": {
-      "apiKey": "SERVIcES__ELEVENLABS__API_KEY",
+      "apiKey": "SERVICES__ELEVENLABS__API_KEY",
       "voiceId": "ZKgxwvemTZ5s4dNRUJcv"
+    },
+    "avatar": {
+      "agentId": "SERVICES__AVATAR__AGENT_ID",
+      "agentSecret": "SERVICES__AVATAR__AGENT_SECRET"
     }
   },
   "authentication": {
