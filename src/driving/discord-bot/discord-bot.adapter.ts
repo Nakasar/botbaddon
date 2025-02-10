@@ -71,6 +71,18 @@ export class DiscordBotAdapter {
 
       logger.debug(interaction);
 
+      if (
+        await this.gateway.mongoClient
+          .collection('blocked-users')
+          .findOne({ discordId: interaction.user.id })
+      ) {
+        await interaction.reply({
+          content: 'You are blocked from using this application!',
+          ephemeral: true,
+        });
+        return;
+      }
+
       const command = commandsMap.get(interaction.commandName);
 
       if (!command) {

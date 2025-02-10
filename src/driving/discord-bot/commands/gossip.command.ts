@@ -304,12 +304,14 @@ export class GossipCommand implements Command {
         const channel = await this.gateway.client.channels.fetch(boardMessage.discordChannelId);
 
         if (!channel || !channel.isSendable()) {
+          logger.debug('Channel not sendable!');
           return;
         }
 
         const message = await channel.messages.fetch(boardMessage.discordMessageId);
 
         if (!message || !message.editable) {
+          logger.debug('Message not editable!');
           return;
         }
 
@@ -327,6 +329,8 @@ export class GossipCommand implements Command {
                 )
               : [],
         });
+
+        logger.debug('Message edited!');
       }),
     );
   }
