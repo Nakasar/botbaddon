@@ -6,27 +6,26 @@ Abaddon was one of the Six Gods, a fallen predecessor of Kormir. He was the God 
 
 Abaddon was once worshiped by the Church of Abaddon. Although the clergy vanished following their god's fall, the church has since resurfaced in a new form as some humans believe that Abaddon had been a martyr who had been wrongly persecuted for wanting to help humanity.
 
-
 Contents
-1	Biography
-1.1	Early years
-1.2	Life on Tyria
-1.3	Fall from grace
-1.4	Return and demise
-1.5	Legacy
-1.5.1	Interim years
-1.5.2	Personal story
-1.5.3	Living World Season 3
-1.5.4	Path of Fire
-2	Scriptures
-3	Story involvement
-3.1	Path of Fire story
-4	Gallery
-5	Related achievements
-6	Notes
-7	Trivia
-8	See also
-9	References
+1 Biography
+1.1 Early years
+1.2 Life on Tyria
+1.3 Fall from grace
+1.4 Return and demise
+1.5 Legacy
+1.5.1 Interim years
+1.5.2 Personal story
+1.5.3 Living World Season 3
+1.5.4 Path of Fire
+2 Scriptures
+3 Story involvement
+3.1 Path of Fire story
+4 Gallery
+5 Related achievements
+6 Notes
+7 Trivia
+8 See also
+9 References
 Biography
 Early years
 Abaddon's past is shrouded in mystery. However, according to the Margonite Apostate, Abaddon gained his power from an older, deposed god.[3]
@@ -159,7 +158,7 @@ Trivia
 The name "Abaddon" is the English form of the Hebrew word "Avadon" (אבדון), which translates to "Doom". In demonology, Abaddon was chief of the demons of the seventh hierarchy and was called The Destroyer.
 Chinese Abaddon background lore promotion for Guild Wars Nightfall suggests that before his fall, Abaddon was described as a handsome, calm figure with imposing eyes and wings as blue as the ocean. But over time his appearance changed; his eyes were replaced by sunken, abyssal shadows and his wings became scythe-like and bloodied. This change of appearance was a direct representation of his heart. Same background also states that Abaddon's wise counsel was often heeded among the Six Gods prior to his fall.[14] However, the canonicity of these statements remains unclear as they have not been referenced in the English release.
 See also
-Gwwlogo.png	The Guild Wars Wiki has an article on Abaddon.
+Gwwlogo.png The Guild Wars Wiki has an article on Abaddon.
 Statue of Abaddon (Guild Wars 1 article)
 Abaddon's Reliquary
 Church of Abaddon

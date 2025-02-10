@@ -8,31 +8,30 @@ Spoiler alert: The following text contains spoilers relating to personal story, 
 Shrine of the Six in Divinity's Reach.
 The Six are a small group of extremely powerful divine beings from somewhere deep in the Mists,[1][2] with powers rivaling those of the Elder Dragons. They are worshiped by the Forgotten as well as humans whom they brought to Tyria. They have a central position in human culture, but have retreated from worldly affairs in the last 250 years. The Six have historically also had some worshipers from native Tyrian races such as centaurs,[3] dwarves,[4][5][6] and possibly naga among others.[7] The norn view the Six as the Spirits of Action, comparing them to the Spirits of the Wild.[8][9]
 
-
 Contents
-1	List of the Human Gods
-1.1	Acknowledged gods since the Ascension of Kormir
-1.2	At present
-2	Characteristics
-3	History
-3.1	Pre-arrival
-3.2	Arrival
-3.3	Exodus of the Gods
-3.4	Nightfall
-3.5	Silence of the gods
-3.6	Recent developments
-4	Perspectives of the other races
-5	Statues
-5.1	Guild Wars
-5.2	Guild Wars 2
-5.3	Other designs
-5.3.1	Concept art
-5.3.1.1	Early concept art
-5.3.1.2	Final versions
-6	Notes
-7	Trivia
-8	See also
-9	References
+1 List of the Human Gods
+1.1 Acknowledged gods since the Ascension of Kormir
+1.2 At present
+2 Characteristics
+3 History
+3.1 Pre-arrival
+3.2 Arrival
+3.3 Exodus of the Gods
+3.4 Nightfall
+3.5 Silence of the gods
+3.6 Recent developments
+4 Perspectives of the other races
+5 Statues
+5.1 Guild Wars
+5.2 Guild Wars 2
+5.3 Other designs
+5.3.1 Concept art
+5.3.1.1 Early concept art
+5.3.1.2 Final versions
+6 Notes
+7 Trivia
+8 See also
+9 References
 List of the Human Gods
 Acknowledged gods since the Ascension of Kormir
 Current
@@ -155,18 +154,14 @@ Kormir: Temple of the Ages (underwater) within Queensdale.
 Dwayna
 Dwayna
 
-
 Balthazar
 Balthazar
-
 
 Melandru
 Melandru
 
-
 Grenth
 Grenth
-
 
 Kormir
 Kormir
@@ -184,22 +179,17 @@ Statues of this style could be found in the god realms of the Mists themselves, 
 Dwayna
 Dwayna
 
-
 Balthazar
 Balthazar
-
 
 Melandru
 Melandru
 
-
 Lyssa
 Lyssa
 
-
 Grenth
 Grenth
-
 
 Kormir
 Kormir
@@ -207,18 +197,14 @@ Kormir
 Dwayna, corrupted by Zhaitan's magic
 Dwayna, corrupted by Zhaitan's magic
 
-
 Balthazar, corrupted by Zhaitan's magic
 Balthazar, corrupted by Zhaitan's magic
-
 
 Melandru, corrupted by Zhaitan's magic
 Melandru, corrupted by Zhaitan's magic
 
-
 Lyssa, corrupted by Zhaitan's magic
 Lyssa, corrupted by Zhaitan's magic
-
 
 Grenth, corrupted by Zhaitan's magic
 Grenth, corrupted by Zhaitan's magic
@@ -227,14 +213,11 @@ Other designs
 Malchor's Statue of Dwayna in the Cathedral of Zephyrs, corrupted by Zhaitan's magic
 Malchor's Statue of Dwayna in the Cathedral of Zephyrs, corrupted by Zhaitan's magic
 
-
 Temple Statue of Balthazar in the Cathedral of Glorious Victory
 Temple Statue of Balthazar in the Cathedral of Glorious Victory
 
-
 Sunspear-style statue of Kormir
 Sunspear-style statue of Kormir
-
 
 Abaddon
 Abaddon
@@ -244,18 +227,14 @@ Early concept art
 Dwayna
 Dwayna
 
-
 Balthazar
 Balthazar
-
 
 Melandru
 Melandru
 
-
 Lyssa
 Lyssa
-
 
 Kormir
 Kormir
@@ -264,22 +243,17 @@ Final versions
 Dwayna
 Dwayna
 
-
 Balthazar
 Balthazar
-
 
 Melandru
 Melandru
 
-
 Lyssa
 Lyssa
 
-
 Grenth
 Grenth
-
 
 Kormir
 Kormir
@@ -294,7 +268,7 @@ the Ancient Ones (used by Forgotten)
 Trivia
 The name of Abaddon's predecessor is speculated to be Arachnia, as this name can be found by datamining Guild Wars. While some information originally found in the gw.dat (such as the name of the Lonely Vigil statue) was later confirmed by canon sources, other information originally gleaned from gw.dat (such as the Realm of Torment being renamed the Redeemed Realm after the Ascension of Kormir) has later been flatly contradicted by canon sources. For this reason, the existence of Arachnia should be considered non-canon until confirmed by canon sources.
 See also
-Gwwlogo.png	The Guild Wars Wiki has an article on Human Gods.
+Gwwlogo.png The Guild Wars Wiki has an article on Human Gods.
 Orrian History Scrolls: The Six
 The Six: Being or Playing God
 Tome of the Five True Gods

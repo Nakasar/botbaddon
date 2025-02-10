@@ -1,18 +1,21 @@
 import {
   ChatInputCommandInteraction,
-  ColorResolvable,
+  ContextMenuCommandBuilder,
   EmbedBuilder,
   SharedSlashCommand,
-  SlashCommandBuilder
-} from "discord.js";
-import {Command} from "../discord-bot.adapter";
-import logger from "../../../logger";
+  SlashCommandBuilder,
+} from 'discord.js';
+import { Command } from '../discord-bot.adapter';
+import logger from '../../../logger';
 import {
-  dateToFrenchString, frenchToDate,
+  dateToFrenchString,
+  frenchToDate,
   frenchToMouvelian,
   gregorianToMouvelian,
-  mouvelianToFrenchString, mouvelianToGregorian
-} from "../../../utils/date.utils";
+  mouvelianToFrenchString,
+  mouvelianToGregorian,
+} from '../../../utils/date.utils';
+import Router from '@koa/router';
 
 export class DateCommand implements Command {
   readonly name = 'date';
@@ -26,9 +29,9 @@ export class DateCommand implements Command {
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
-            .setTitle("Conversion de date")
+            .setTitle('Conversion de date')
             .setDescription(
-              `**${mouvelianToFrenchString(mouvelianDate, { withYear: true })}** <- _(${dateToFrenchString(date, { withYear: true })})_`
+              `**${mouvelianToFrenchString(mouvelianDate, { withYear: true })}** <- _(${dateToFrenchString(date, { withYear: true })})_`,
             ),
         ],
       });
@@ -40,10 +43,8 @@ export class DateCommand implements Command {
             embeds: [
               new EmbedBuilder()
                 .setColor('#FF8000')
-                .setTitle("Conversion de date")
-                .setDescription(
-                  'Date non précisée comme paramètre.'
-                ),
+                .setTitle('Conversion de date')
+                .setDescription('Date non précisée comme paramètre.'),
             ],
           });
           return;
@@ -56,9 +57,9 @@ export class DateCommand implements Command {
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
-              .setTitle("Conversion de date")
+              .setTitle('Conversion de date')
               .setDescription(
-                `**${mouvelianToFrenchString(mouvelianDate, { withYear: true })}** <- _(${dateToFrenchString(realDate, { withYear: true })})_`
+                `**${mouvelianToFrenchString(mouvelianDate, { withYear: true })}** <- _(${dateToFrenchString(realDate, { withYear: true })})_`,
               ),
           ],
         });
@@ -69,9 +70,9 @@ export class DateCommand implements Command {
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
-              .setTitle("Conversion de date")
+              .setTitle('Conversion de date')
               .setDescription(
-                "Je n'ai pas été capable de convertir cette date (une date Grégorien ressemble à *4 Mars*)."
+                "Je n'ai pas été capable de convertir cette date (une date Grégorien ressemble à *4 Mars*).",
               ),
           ],
         });
@@ -85,10 +86,8 @@ export class DateCommand implements Command {
             embeds: [
               new EmbedBuilder()
                 .setColor('#FF8000')
-                .setTitle("Conversion de date")
-                .setDescription(
-                  'Date non précisée comme paramètre.'
-                ),
+                .setTitle('Conversion de date')
+                .setDescription('Date non précisée comme paramètre.'),
             ],
           });
           return;
@@ -101,9 +100,9 @@ export class DateCommand implements Command {
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
-              .setTitle("Conversion de date")
+              .setTitle('Conversion de date')
               .setDescription(
-                `**${dateToFrenchString(realDate, { withYear: true })}** <- _(${mouvelianToFrenchString(mouvelianDate, { withYear: true })})_`
+                `**${dateToFrenchString(realDate, { withYear: true })}** <- _(${mouvelianToFrenchString(mouvelianDate, { withYear: true })})_`,
               ),
           ],
         });
@@ -114,9 +113,9 @@ export class DateCommand implements Command {
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
-              .setTitle("Conversion de date")
+              .setTitle('Conversion de date')
               .setDescription(
-                "Je n'ai pas été capable de convertir cette date (une date Mouvelienne ressemble à *4 Zéphyr*)."
+                "Je n'ai pas été capable de convertir cette date (une date Mouvelienne ressemble à *4 Zéphyr*).",
               ),
           ],
         });
@@ -127,43 +126,43 @@ export class DateCommand implements Command {
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
-            .setTitle("Conversion de date")
-            .setDescription(
-              'Commande non valide.'
-            ),
+            .setTitle('Conversion de date')
+            .setDescription('Commande non valide.'),
         ],
       });
     }
   }
 
-  build(): SharedSlashCommand {
-    return new SlashCommandBuilder()
-      .setName(this.name)
-      .addSubcommand(subcommand =>
-        subcommand
-          .setName('today')
-          .setDescription("Affiche la date Mouvelienne actuelle")
-      )
-      .addSubcommand(subcommand =>
-        subcommand
-          .setName('mouvelien')
-          .addStringOption(option =>
-            option
-              .setName('date')
-              .setDescription('La date à convertir (ex: 10 mars, dd/mm/aaaa, ...)')
-              .setRequired(true))
-          .setDescription("Transforme la date réelle en date Mouvelienne")
-      )
-      .addSubcommand(subcommand =>
-        subcommand
-          .setName('gregorien')
-          .addStringOption(option =>
-            option
-              .setName('date')
-              .setDescription('La date à convertir (ex: 10 Zéphyr)')
-              .setRequired(true))
-          .setDescription("Transforme la date Mouvelienne en date réelle")
-      )
-      .setDescription("Convertir des dates depuis et vers le calendrier Mouvelien");
+  build(): (ContextMenuCommandBuilder | SharedSlashCommand)[] {
+    return [
+      new SlashCommandBuilder()
+        .setName(this.name)
+        .addSubcommand((subcommand) =>
+          subcommand.setName('today').setDescription('Affiche la date Mouvelienne actuelle'),
+        )
+        .addSubcommand((subcommand) =>
+          subcommand
+            .setName('mouvelien')
+            .addStringOption((option) =>
+              option
+                .setName('date')
+                .setDescription('La date à convertir (ex: 10 mars, dd/mm/aaaa, ...)')
+                .setRequired(true),
+            )
+            .setDescription('Transforme la date réelle en date Mouvelienne'),
+        )
+        .addSubcommand((subcommand) =>
+          subcommand
+            .setName('gregorien')
+            .addStringOption((option) =>
+              option
+                .setName('date')
+                .setDescription('La date à convertir (ex: 10 Zéphyr)')
+                .setRequired(true),
+            )
+            .setDescription('Transforme la date Mouvelienne en date réelle'),
+        )
+        .setDescription('Convertir des dates depuis et vers le calendrier Mouvelien'),
+    ];
   }
 }

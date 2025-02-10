@@ -2,9 +2,9 @@ import config from 'config';
 import Koa from 'koa';
 import { Server } from 'node:http';
 
-import logger from "../../logger";
-import Router from "@koa/router";
-import {DiscordBotAdapter} from "../discord-bot/discord-bot.adapter";
+import logger from '../../logger';
+import Router from '@koa/router';
+import { DiscordBotAdapter } from '../discord-bot/discord-bot.adapter';
 
 export class KoaAdapter {
   private app: Koa = new Koa();
@@ -30,7 +30,7 @@ export class KoaAdapter {
             error: {
               message: 'Unauthorized',
               code: 'unauthorized',
-            }
+            },
           };
           return;
         }
@@ -41,9 +41,10 @@ export class KoaAdapter {
           ctx.status = 400;
           ctx.body = {
             error: {
-              message: 'guildId query parameter is required (right click your server in Discord in developer mode and click "Copy identifier").',
+              message:
+                'guildId query parameter is required (right click your server in Discord in developer mode and click "Copy identifier").',
               code: 'invalid_guild_id',
-            }
+            },
           };
           return;
         }
@@ -56,16 +57,16 @@ export class KoaAdapter {
 
         ctx.status = 200;
         ctx.body = {
-          message: 'Guild commands refreshed successfully.'
+          message: 'Guild commands refreshed successfully.',
         };
-      } catch (error) {
-        logger.error(error);
+      } catch (error: any) {
+        logger.error('Failed to refresh guild commands', { error });
         ctx.status = 500;
         ctx.body = {
           error: {
             message: 'An error occurred while refreshing guild commands.',
             code: 'internal_error',
-          }
+          },
         };
       }
     });
@@ -78,7 +79,7 @@ export class KoaAdapter {
             error: {
               message: 'Unauthorized',
               code: 'unauthorized',
-            }
+            },
           };
           return;
         }
@@ -87,15 +88,16 @@ export class KoaAdapter {
 
         ctx.status = 200;
         ctx.body = {
-          message: 'Global commands refreshed successfully.'
+          message: 'Global commands refreshed successfully.',
         };
-      } catch (error) {
+      } catch (error: any) {
+        logger.error({ error: { message: error.message, name: error.name } });
         ctx.status = 500;
         ctx.body = {
           error: {
             message: 'An error occurred while refreshing global commands.',
             code: 'internal_error',
-          }
+          },
         };
       }
     });

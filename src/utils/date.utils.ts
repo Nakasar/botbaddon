@@ -1,5 +1,18 @@
 const FRENCH_DAYS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-const FRENCH_MONTHS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+const FRENCH_MONTHS = [
+  'Janvier',
+  'Février',
+  'Mars',
+  'Avril',
+  'Mai',
+  'Juin',
+  'Juillet',
+  'Août',
+  'Septembre',
+  'Octobre',
+  'Novembre',
+  'Décembre',
+];
 
 export const MOUVELIAN_SEASONS = ['Zéphyr', 'Phénix', 'Scion', 'Colosse'];
 
@@ -28,11 +41,15 @@ export function dateToFrenchString(date: Date, { withDay = true, withYear = fals
  * @param dateString Vous collez à tout ce que vous touchez
  * @returns {{year: (string|number), season: number, day: string}}
  */
-export function frenchToMouvelian(dateString: string): { day: number; season: number; year: number} {
-  const args = dateString.split(' ').map(el => el.trim());
+export function frenchToMouvelian(dateString: string): {
+  day: number;
+  season: number;
+  year: number;
+} {
+  const args = dateString.split(' ').map((el) => el.trim());
 
   const day = parseInt(args[0]);
-  const season = MOUVELIAN_SEASONS.map(s => s.toLowerCase()).indexOf(args[1].toLowerCase());
+  const season = MOUVELIAN_SEASONS.map((s) => s.toLowerCase()).indexOf(args[1].toLowerCase());
   if (season === -1) {
     throw new Error('Invalid season.');
   }
@@ -47,13 +64,13 @@ export function frenchToMouvelian(dateString: string): { day: number; season: nu
  * @returns {Date}
  */
 export function frenchToDate(dateString: string): Date {
-  const args = dateString.split(/[ \/\-]/).map(el => el.trim());
+  const args = dateString.split(/[ \/\-]/).map((el) => el.trim());
   const date = new Date();
 
   let day, month, year;
 
   if (args.length === 1) {
-    const dayOfWeek = FRENCH_DAYS.map(d => d.toLowerCase()).indexOf(args[0].toLowerCase());
+    const dayOfWeek = FRENCH_DAYS.map((d) => d.toLowerCase()).indexOf(args[0].toLowerCase());
     if (dayOfWeek === -1) {
       throw new Error('Invalid date.');
     }
@@ -67,7 +84,9 @@ export function frenchToDate(dateString: string): Date {
       throw new Error('Invalid date.');
     }
 
-    month = !Number.isNaN(+args[1]) ? +args[1] - 1 : FRENCH_MONTHS.map(m => m.toLowerCase()).indexOf(args[1].toLowerCase());
+    month = !Number.isNaN(+args[1])
+      ? +args[1] - 1
+      : FRENCH_MONTHS.map((m) => m.toLowerCase()).indexOf(args[1].toLowerCase());
     if (month < 0 || month >= 12) {
       throw new Error('Invalid date.');
     }
@@ -102,8 +121,14 @@ function getFrenchMonth(month: number) {
  * @param gregorianDate
  * @returns {{year: number, day: number}}
  */
-export function gregorianToMouvelian(gregorianDate: Date): { day: number; season: number; year: number } {
-  const day = Math.ceil((gregorianDate.getTime() - new Date(gregorianDate.getFullYear(), 0, 1).getTime()) / 86400000);
+export function gregorianToMouvelian(gregorianDate: Date): {
+  day: number;
+  season: number;
+  year: number;
+} {
+  const day = Math.ceil(
+    (gregorianDate.getTime() - new Date(gregorianDate.getFullYear(), 0, 1).getTime()) / 86400000,
+  );
   const mouvelianDate = {
     day,
     year: gregorianDate.getFullYear() - 687,
@@ -138,7 +163,10 @@ export function gregorianToMouvelian(gregorianDate: Date): { day: number; season
  * @param withYear
  * @returns {string}
  */
-export function mouvelianToFrenchString({ day, season, year }: { day: number; season: number; year: number}, { withYear = false } = {}): string {
+export function mouvelianToFrenchString(
+  { day, season, year }: { day: number; season: number; year: number },
+  { withYear = false } = {},
+): string {
   return `${day} du ${MOUVELIAN_SEASONS[season]}${withYear ? ` ${year}` : ''}`;
 }
 
@@ -149,7 +177,15 @@ export function mouvelianToFrenchString({ day, season, year }: { day: number; se
  * @param year
  * @returns {Date}
  */
-export function mouvelianToGregorian({ day, season, year }: { day: number; season: number; year: number }) {
+export function mouvelianToGregorian({
+  day,
+  season,
+  year,
+}: {
+  day: number;
+  season: number;
+  year: number;
+}) {
   const realYear = year + 687;
   const bisex = year % 4 === 0;
   const offset = bisex ? -1 : 0;

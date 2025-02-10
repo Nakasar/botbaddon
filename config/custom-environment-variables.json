@@ -10,8 +10,7 @@
       "dateChannelId": "SERVICES__DISCORD__DATE_CHANNEL_ID"
     },
     "mongo": {
-      "url": "mongodb://localhost:27017",
-      "database": "botbaddon"
+      "url": "SERVICES__MONGO__URL"
     },
     "elevenlabs": {
       "apiKey": "SERVICES__ELEVENLABS__API_KEY",

@@ -1,24 +1,26 @@
-import {Command} from "../discord-bot.adapter";
+import { Command } from '../discord-bot.adapter';
 import {
   ChannelType,
   ChatInputCommandInteraction,
+  ContextMenuCommandBuilder,
   EmbedBuilder,
   SharedSlashCommand,
-  SlashCommandBuilder
-} from "discord.js";
+  SlashCommandBuilder,
+} from 'discord.js';
 import {
   AudioPlayer,
-  AudioPlayerStatus, AudioResource,
+  AudioPlayerStatus,
+  AudioResource,
   createAudioPlayer,
   createAudioResource,
   getVoiceConnection,
-  joinVoiceChannel
-} from "@discordjs/voice";
-import config from "config";
-import {ElevenLabsClient} from "elevenlabs";
-import logger from "../../../logger";
-import path from "node:path";
-import {Readable} from "node:stream";
+  joinVoiceChannel,
+} from '@discordjs/voice';
+import config from 'config';
+import { ElevenLabsClient } from 'elevenlabs';
+import logger from '../../../logger';
+import path from 'node:path';
+import { Readable } from 'node:stream';
 import { WebSocket } from 'ws';
 
 const elevenlabs = new ElevenLabsClient({
@@ -32,7 +34,10 @@ export class Instance {
   private messages: Record<string, any>[] = [];
   private sequence: number = 0;
 
-  constructor(private readonly agentId: string, public channelId: string) {
+  constructor(
+    private readonly agentId: string,
+    public channelId: string,
+  ) {
     this.player.on(AudioPlayerStatus.AutoPaused, () => {
       logger.info('Player finished!');
     });
@@ -50,7 +55,9 @@ export class Instance {
   async connect() {
     logger.info(`Connecting instance to ${this.channelId}`);
 
-    this.socket = new WebSocket(`wss://api.avatar.lu/agents/${config.get('services.avatar.agentId')}/sockets`);
+    this.socket = new WebSocket(
+      `wss://api.avatar.lu/agents/${config.get('services.avatar.agentId')}/sockets`,
+    );
 
     this.socket.addEventListener('message', (message) => {
       try {
@@ -87,7 +94,9 @@ export class Instance {
             break;
         }
       } catch (error: any) {
-        logger.error('Error while handling agent socket event', { error: { message: error.message, stack: error.stack } });
+        logger.error('Error while handling agent socket event', {
+          error: { message: error.message, stack: error.stack },
+        });
       }
     });
 
@@ -122,31 +131,39 @@ export class Instance {
   }
 
   async playNextMessage() {
-    logger.debug('PLAYING NEXT MESSAGE', { messageId: this.messageId, sequence: this.sequence });
+    logger.debug('PLAYING NEXT MESSAGE', {
+      messageId: this.messageId,
+      sequence: this.sequence,
+    });
     if (!this.messageId || this.messages.length === 0) {
       return;
     }
 
-    const nextMessage = this.messages.find(message => message.messageId === this.messageId && message.sequence === this.sequence && message.type === 'SAY');
+    const nextMessage = this.messages.find(
+      (message) =>
+        message.messageId === this.messageId &&
+        message.sequence === this.sequence &&
+        message.type === 'SAY',
+    );
 
     if (!nextMessage) {
-      if (!this.messages.find(
-        (message) => message.messageId === this.messageId && (message.sequence ?? 0) > this.sequence,
-      )) {
+      if (
+        !this.messages.find(
+          (message) =>
+            message.messageId === this.messageId && (message.sequence ?? 0) > this.sequence,
+        )
+      ) {
         logger.debug('FINISHED PLAYING AUDIO');
-        await fetch(
-          `https://api.avatar.lu/agents/${this.agentId}/status`,
-          {
-            method: 'POST',
-            headers: {
-              'x-api-key': `${this.agentId}:${config.get('services.avatar.agentSecret')}`,
-              'content-type': 'application/json',
-            },
-            body: JSON.stringify({
-              status: 'IDLE',
-            }),
+        await fetch(`https://api.avatar.lu/agents/${this.agentId}/status`, {
+          method: 'POST',
+          headers: {
+            'x-api-key': `${this.agentId}:${config.get('services.avatar.agentSecret')}`,
+            'content-type': 'application/json',
           },
-        ).then(() => {
+          body: JSON.stringify({
+            status: 'IDLE',
+          }),
+        }).then(() => {
           console.log('Marked connector as IDLE');
         });
         return;
@@ -167,19 +184,16 @@ export class Instance {
       this.playNextMessage();
     } else {
       this.sequence++;
-      await fetch(
-        `https://api.avatar.lu/agents/${this.agentId}/status`,
-        {
-          method: 'POST',
-          headers: {
-            'x-api-key': `${this.agentId}:${config.get('services.avatar.agentSecret')}`,
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            status: 'IDLE',
-          }),
+      await fetch(`https://api.avatar.lu/agents/${this.agentId}/status`, {
+        method: 'POST',
+        headers: {
+          'x-api-key': `${this.agentId}:${config.get('services.avatar.agentSecret')}`,
+          'content-type': 'application/json',
         },
-      ).then(() => {
+        body: JSON.stringify({
+          status: 'IDLE',
+        }),
+      }).then(() => {
         console.log('Marked connector as IDLE');
       });
       return;
@@ -196,10 +210,8 @@ export class AiCommand implements Command {
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
-            .setTitle("Une voix par délà le voile...")
-            .setDescription(
-              "Abaddon ne vous répond pas..."
-            ),
+            .setTitle('Une voix par délà le voile...')
+            .setDescription('Abaddon ne vous répond pas...'),
         ],
       });
       return;
@@ -208,31 +220,29 @@ export class AiCommand implements Command {
     if (interaction.options.getSubcommand() === 'invoke') {
       if (!interaction.guildId) {
         await interaction.reply({
-          flags: ["Ephemeral"],
+          flags: ['Ephemeral'],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
-              .setTitle("Une voix par délà le voile...")
-              .setDescription(
-                "Le rituel utilisé pour l'invocation ne semble pas valide..."
-              ),
+              .setTitle('Une voix par délà le voile...')
+              .setDescription("Le rituel utilisé pour l'invocation ne semble pas valide..."),
           ],
         });
         return;
       }
 
-      const channel = interaction.options.getChannel('voice-channel', true, [ChannelType.GuildVoice]);
+      const channel = interaction.options.getChannel('voice-channel', true, [
+        ChannelType.GuildVoice,
+      ]);
 
       if (!channel || channel.type !== ChannelType.GuildVoice || !channel.guild) {
         await interaction.reply({
-          flags: ["Ephemeral"],
+          flags: ['Ephemeral'],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
-              .setTitle("Une voix par délà le voile...")
-              .setDescription(
-                "Le rituel utilisé pour l'invocation ne semble pas valide..."
-              ),
+              .setTitle('Une voix par délà le voile...')
+              .setDescription("Le rituel utilisé pour l'invocation ne semble pas valide..."),
           ],
         });
         return;
@@ -250,27 +260,23 @@ export class AiCommand implements Command {
       await instance.connect();
 
       await interaction.reply({
-        flags: ["Ephemeral"],
+        flags: ['Ephemeral'],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
-            .setTitle("Une voix par délà le voile...")
-            .setDescription(
-              "Une incarnation du Dieu des Secret nous rejoint !"
-            ),
+            .setTitle('Une voix par délà le voile...')
+            .setDescription('Une incarnation du Dieu des Secret nous rejoint !'),
         ],
       });
     } else if (interaction.options.getSubcommand() === 'revoke') {
       if (!interaction.guildId) {
         await interaction.reply({
-          flags: ["Ephemeral"],
+          flags: ['Ephemeral'],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
-              .setTitle("Une voix par délà le voile...")
-              .setDescription(
-                "Le rituel utilisé pour l'invocation ne semble pas valide..."
-              ),
+              .setTitle('Une voix par délà le voile...')
+              .setDescription("Le rituel utilisé pour l'invocation ne semble pas valide..."),
           ],
         });
         return;
@@ -280,14 +286,12 @@ export class AiCommand implements Command {
       connection?.destroy();
 
       await interaction.reply({
-        flags: ["Ephemeral"],
+        flags: ['Ephemeral'],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
-            .setTitle("Une voix par délà le voile...")
-            .setDescription(
-              "L'incarnation du Dieu des Secret nous quitte..."
-            ),
+            .setTitle('Une voix par délà le voile...')
+            .setDescription("L'incarnation du Dieu des Secret nous quitte..."),
         ],
       });
     } else if (interaction.options.getSubcommand() === 'say') {
@@ -295,14 +299,12 @@ export class AiCommand implements Command {
 
       if (!interaction.guildId) {
         await interaction.reply({
-          flags: ["Ephemeral"],
+          flags: ['Ephemeral'],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
-              .setTitle("Une voix par délà le voile...")
-              .setDescription(
-                "Le rituel utilisé pour l'invocation ne semble pas valide..."
-              ),
+              .setTitle('Une voix par délà le voile...')
+              .setDescription("Le rituel utilisé pour l'invocation ne semble pas valide..."),
           ],
         });
         return;
@@ -312,14 +314,12 @@ export class AiCommand implements Command {
 
       if (!connection) {
         await interaction.reply({
-          flags: ["Ephemeral"],
+          flags: ['Ephemeral'],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
-              .setTitle("Une voix par délà le voile...")
-              .setDescription(
-                "Aucun avatar n'est disponible pour s'exprimer."
-              ),
+              .setTitle('Une voix par délà le voile...')
+              .setDescription("Aucun avatar n'est disponible pour s'exprimer."),
           ],
         });
         return;
@@ -333,7 +333,7 @@ export class AiCommand implements Command {
         const audio = await elevenlabs.generate({
           voice: config.get('services.elevenlabs.voiceId'),
           text,
-          model_id: "eleven_multilingual_v2",
+          model_id: 'eleven_multilingual_v2',
         });
         logger.info('Audio generated! Creating source and playing it.');
 
@@ -358,68 +358,64 @@ export class AiCommand implements Command {
       });
 
       await interaction.reply({
-        flags: ["Ephemeral"],
+        flags: ['Ephemeral'],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
-            .setTitle("Une voix par délà le voile...")
-            .setDescription(
-              "L'avatar s'exprime..."
-            ),
+            .setTitle('Une voix par délà le voile...')
+            .setDescription("L'avatar s'exprime..."),
         ],
       });
     } else {
       await interaction.reply({
-        flags: ["Ephemeral"],
+        flags: ['Ephemeral'],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
-            .setTitle("Une voix par délà le voile...")
-            .setDescription(
-              "Le rituel utilisé pour l'invocation ne semble pas valide..."
-            ),
+            .setTitle('Une voix par délà le voile...')
+            .setDescription("Le rituel utilisé pour l'invocation ne semble pas valide..."),
         ],
       });
     }
   }
 
-  build(): SharedSlashCommand {
-    return new SlashCommandBuilder()
-      .setName(this.name)
-      .addSubcommand(subcommand =>
-        subcommand
-          .setName('invoke')
-          .addChannelOption(option =>
-            option
-              .setName('voice-channel')
-              .setNameLocalizations({
-                'fr': 'canal-vocal',
-              })
-              .setDescription("Le canal vocal où invoquer l'avatar.")
-              .addChannelTypes(ChannelType.GuildVoice)
-              .setRequired(true)
-          )
-          .setDescription("Conjurer un avatar du Dieu des Secrets.")
-      )
-      .addSubcommand(subcommand =>
-        subcommand
-          .setName('revoke')
-          .setDescription("Renvoyer l'avatar dans le Néant.")
-      )
-      .addSubcommand(subcommand =>
-        subcommand
-          .setName('say')
-          .addStringOption(option =>
-            option
-              .setName('text')
-              .setNameLocalizations({
-                'fr': 'texte',
-              })
-              .setDescription("Le texte à dire.")
-              .setRequired(true)
-          )
-          .setDescription("Faire parler l'avatar.")
-      )
-      .setDescription('Conjure la puissance des Secrets.');
+  build(): (ContextMenuCommandBuilder | SharedSlashCommand)[] {
+    return [
+      new SlashCommandBuilder()
+        .setName(this.name)
+        .addSubcommand((subcommand) =>
+          subcommand
+            .setName('invoke')
+            .addChannelOption((option) =>
+              option
+                .setName('voice-channel')
+                .setNameLocalizations({
+                  fr: 'canal-vocal',
+                })
+                .setDescription("Le canal vocal où invoquer l'avatar.")
+                .addChannelTypes(ChannelType.GuildVoice)
+                .setRequired(true),
+            )
+            .setDescription('Conjurer un avatar du Dieu des Secrets.'),
+        )
+        .addSubcommand((subcommand) =>
+          subcommand.setName('revoke').setDescription("Renvoyer l'avatar dans le Néant."),
+        )
+        .addSubcommand((subcommand) =>
+          subcommand
+            .setName('say')
+            .addStringOption((option) =>
+              option
+                .setName('text')
+                .setNameLocalizations({
+                  fr: 'texte',
+                })
+                .setDescription('Le texte à dire.')
+                .setRequired(true),
+            )
+            .setDescription("Faire parler l'avatar."),
+        )
+        .setDescription('Conjure la puissance des Secrets.'),
+    ];
   }
 }

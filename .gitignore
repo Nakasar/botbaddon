@@ -2,7 +2,7 @@
 node_modules/
 
 # Config
-config/local.json
+config/*local.json
 
 # IDE
 .idea/

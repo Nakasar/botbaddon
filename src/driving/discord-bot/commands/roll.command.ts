@@ -1,16 +1,25 @@
-import { Command } from "../discord-bot.adapter";
-import {ChatInputCommandInteraction, EmbedBuilder, SharedSlashCommand, SlashCommandBuilder} from "discord.js";
-import c from "config";
+import { Command } from '../discord-bot.adapter';
+import {
+  ChatInputCommandInteraction,
+  ContextMenuCommandBuilder,
+  EmbedBuilder,
+  SharedSlashCommand,
+  SlashCommandBuilder,
+} from 'discord.js';
+import c from 'config';
 
 export class RollCommand implements Command {
-  readonly name = "roll";
+  readonly name = 'roll';
 
   async execute(interaction: ChatInputCommandInteraction) {
     const expression = interaction.options.getString('lancer');
     const comment = interaction.options.getString('commentaire');
 
     if (!expression) {
-      await interaction.reply({ content: 'Expression de lancer invalide.', flags: ["Ephemeral"] });
+      await interaction.reply({
+        content: 'Expression de lancer invalide.',
+        flags: ['Ephemeral'],
+      });
       return;
     }
 
@@ -22,38 +31,39 @@ export class RollCommand implements Command {
           .setColor('#FF8000')
           .setTitle(`${interaction.user.username}${comment ? ` # ${comment}` : ''}`)
           .setDescription(
-            `\`${result.expression}\` → \`${result.rolled}\` = **\`${
-              result.result
-            }\`**
+            `\`${result.expression}\` → \`${result.rolled}\` = **\`${result.result}\`**
                             ${result.result
-              .toString()
-              .split("")
-              .map((digit: string) => digitToEmoji(digit))
-              .join(" ")}    ${
-              result.critFailure
-                ? ":skull_crossbones: Echec Critique :skull_crossbones:"
-                : ""
-            }  ${result.critSuccess ? ":zap: Réussite Critique :zap:" : ""}`
+                              .toString()
+                              .split('')
+                              .map((digit: string) => digitToEmoji(digit))
+                              .join(' ')}    ${
+                              result.critFailure
+                                ? ':skull_crossbones: Echec Critique :skull_crossbones:'
+                                : ''
+                            }  ${result.critSuccess ? ':zap: Réussite Critique :zap:' : ''}`,
           ),
       ],
-    })
+    });
   }
 
-  build(): SharedSlashCommand {
-    return new SlashCommandBuilder()
-      .setName(this.name)
-      .addStringOption(option =>
-        option
-          .setName('lancer')
-          .setDescription('Dés à lancer, par exemple "1d6 + 4"')
-          .setRequired(true)
-      )
-      .addStringOption(option =>
-        option.setName('commentaire')
-          .setDescription('Commentaire à ajouter au lancer')
-          .setRequired(false)
-      )
-      .setDescription('Lancer des dés');
+  build(): (ContextMenuCommandBuilder | SharedSlashCommand)[] {
+    return [
+      new SlashCommandBuilder()
+        .setName(this.name)
+        .addStringOption((option) =>
+          option
+            .setName('lancer')
+            .setDescription('Dés à lancer, par exemple "1d6 + 4"')
+            .setRequired(true),
+        )
+        .addStringOption((option) =>
+          option
+            .setName('commentaire')
+            .setDescription('Commentaire à ajouter au lancer')
+            .setRequired(false),
+        )
+        .setDescription('Lancer des dés'),
+    ];
   }
 }
 
@@ -62,8 +72,8 @@ async function evaluate(expression: string) {
     const regex = /^([+-]{0,1}\d{1,2}d\d{1,4}([+-]\d{1,4}){0,}){1,}$/;
     if (!regex.test(expression.toLowerCase().trim())) {
       throw {
-        message: "Invalid expression to evaluate.",
-        id: "INVALID_EXPRESSION"
+        message: 'Invalid expression to evaluate.',
+        id: 'INVALID_EXPRESSION',
       };
     }
 
@@ -73,8 +83,8 @@ async function evaluate(expression: string) {
     let critFailure = false;
     let critSuccess = false;
     try {
-      rolled = expression.toLowerCase().replace(diceRegex, match => {
-        const [amountRaw, diceRaw] = match.split("d");
+      rolled = expression.toLowerCase().replace(diceRegex, (match) => {
+        const [amountRaw, diceRaw] = match.split('d');
         const amount = parseInt(amountRaw);
         const dice = parseInt(diceRaw);
         const res = [];
@@ -92,12 +102,12 @@ async function evaluate(expression: string) {
           res.push(`(${rolled})`);
         }
 
-        return `(${res.join("+")})`;
+        return `(${res.join('+')})`;
       });
     } catch (e) {
       throw {
-        message: "Could not roll dices.",
-        id: "INVALID_EXPRESSION"
+        message: 'Could not roll dices.',
+        id: 'INVALID_EXPRESSION',
       };
     }
 
@@ -107,8 +117,8 @@ async function evaluate(expression: string) {
     } catch (e) {
       console.log(e);
       throw {
-        message: "Could not evaluate rolled expression.",
-        id: "INVALID_EXPRESSION"
+        message: 'Could not evaluate rolled expression.',
+        id: 'INVALID_EXPRESSION',
       };
     }
 
@@ -123,19 +133,18 @@ async function evaluate(expression: string) {
 }
 
 function digitToEmoji(digit: string) {
-
   const digitEmojies: { [digit: string]: string } = {
     '-': ':heavy_minus_sign:',
-    '0': ":zero:",
-    '1': ":one:",
-    '2': ":two:",
-    '3': ":three:",
-    '4': ":four:",
-    '5': ":five:",
-    '6': ":six:",
-    '7': ":seven:",
-    '8': ":eight:",
-    '9': ":nine:"
+    '0': ':zero:',
+    '1': ':one:',
+    '2': ':two:',
+    '3': ':three:',
+    '4': ':four:',
+    '5': ':five:',
+    '6': ':six:',
+    '7': ':seven:',
+    '8': ':eight:',
+    '9': ':nine:',
   };
   return digitEmojies[digit];
 }

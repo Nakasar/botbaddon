@@ -11,8 +11,7 @@
       "admins": ["186208105502081025"]
     },
     "mongo": {
-      "url": "SERVICES__MONGO__URL",
-      "database": "SERVICES__MONGO__DATABASE"
+      "url": "SERVICES__MONGO__URL"
     },
     "elevenlabs": {
       "apiKey": "SERVICES__ELEVENLABS__API_KEY",
