@@ -19,6 +19,7 @@ import { gregorianToMouvelian, MOUVELIAN_SEASONS } from '../../utils/date.utils'
 import { AiCommand } from './commands/ai.command';
 import { GossipCommand } from './commands/gossip.command';
 import { Db } from 'mongodb';
+import { UsersCommand } from './commands/users.command';
 
 interface DiscordBotAdapterGateway {
   mongoClient: Db;
@@ -51,6 +52,7 @@ export class DiscordBotAdapter {
       new DateCommand(),
       new AiCommand(),
       new GossipCommand({ mongoClient: this.gateway.mongoClient, client: this.client }),
+      new UsersCommand({ mongoClient: this.gateway.mongoClient }),
     ];
   }
 
