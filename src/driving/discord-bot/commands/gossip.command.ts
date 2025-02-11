@@ -382,7 +382,7 @@ export class GossipCommand implements Command {
         ),
       new ContextMenuCommandBuilder()
         .setName(this.name)
-        .setNameLocalization('fr', 'Créer une rumeur')
+        .setNameLocalization('fr', 'Créer ou actualiser une rumeur')
         .setType(ApplicationCommandType.Message),
     ];
   }

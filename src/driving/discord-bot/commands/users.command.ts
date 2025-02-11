@@ -8,7 +8,7 @@ export interface UsersCommandGateway {
 }
 
 export class UsersCommand implements Command {
-  name = 'users';
+  readonly name = 'users';
 
   constructor(private readonly gateway: UsersCommandGateway) {}
 
@@ -105,8 +105,10 @@ export class UsersCommand implements Command {
   build() {
     return [
       new SlashCommandBuilder()
-        .setName('users')
+        .setName(this.name)
         .setNameLocalization('fr', 'utilisateurs')
+        .setDescription('Manage users')
+        .setDescriptionLocalization('fr', 'Gérer les utilisateurs')
         .addSubcommand((subcommand) =>
           subcommand
             .setName('block')

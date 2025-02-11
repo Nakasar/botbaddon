@@ -160,12 +160,12 @@ export class DiscordBotAdapter {
 
   async refreshGuildCommands(guildId: string, empty = false) {
     if (empty) {
-      await this.restClient.put(
+      return this.restClient.put(
         Routes.applicationGuildCommands(config.get('services.discord.clientId'), guildId),
         { body: [] },
       );
     } else {
-      await this.restClient.put(
+      return this.restClient.put(
         Routes.applicationGuildCommands(config.get('services.discord.clientId'), guildId),
         { body: this.commands.map((command) => command.build()).flat() },
       );
@@ -173,8 +173,11 @@ export class DiscordBotAdapter {
   }
 
   async refreshGlobalCommands() {
-    await this.restClient.put(Routes.applicationCommands(config.get('services.discord.clientId')), {
-      body: this.commands.map((command) => command.build()).flat(),
-    });
+    return this.restClient.put(
+      Routes.applicationCommands(config.get('services.discord.clientId')),
+      {
+        body: this.commands.map((command) => command.build()).flat(),
+      },
+    );
   }
 }
