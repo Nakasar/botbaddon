@@ -17,6 +17,7 @@ import { Db } from 'mongodb';
 import cron from 'node-cron';
 import logger from '../../../logger';
 import { Gossip } from './gossip.command';
+import config from 'config';
 
 export type RPEvent = {
   id: string;
@@ -46,7 +47,7 @@ export class EventsCommand implements Command {
   async execute(interaction: Interaction) {
     if (interaction.isChatInputCommand()) {
       if (interaction.options.getSubcommand() === 'list') {
-        const eventsResponse = await fetch('http://localhost:3000/api/events');
+        const eventsResponse = await fetch(`${config.get('services.kalendar.endpoint')}/events`);
 
         if (!eventsResponse.ok) {
           await interaction.reply({
@@ -132,7 +133,9 @@ export class EventsCommand implements Command {
     } else if (interaction.isMessageComponent()) {
       if (interaction.customId.startsWith('events-details-')) {
         const eventId = interaction.customId.replace('events-details-', '');
-        const eventResponse = await fetch(`http://localhost:3000/api/events/${eventId}`);
+        const eventResponse = await fetch(
+          `${config.get('services.kalendar.endpoint')}/events/${eventId}`,
+        );
 
         if (!eventResponse.ok) {
           await interaction.reply({
@@ -219,7 +222,7 @@ export class EventsCommand implements Command {
       return;
     }
 
-    const eventsResponse = await fetch('http://localhost:3000/api/events');
+    const eventsResponse = await fetch(`${config.get('services.kalendar.endpoint')}/events`);
 
     if (!eventsResponse.ok) {
       return;
@@ -366,7 +369,7 @@ export class EventsCommand implements Command {
       .find()
       .toArray();
 
-    const eventsResponse = await fetch('http://localhost:3000/api/events');
+    const eventsResponse = await fetch(`${config.get('services.kalendar.endpoint')}/events`);
 
     if (!eventsResponse.ok) {
       return;

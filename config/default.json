@@ -20,6 +20,9 @@
     "avatar": {
       "agentId": "SERVICES__AVATAR__AGENT_ID",
       "agentSecret": "SERVICES__AVATAR__AGENT_SECRET"
+    },
+    "kalendar": {
+        "endpoint": "SERVICES__KALENDAR__ENDPOINT"
     }
   },
   "authentication": {
