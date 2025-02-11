@@ -9,12 +9,13 @@ import {
   time,
   TimestampStyles,
   Client,
+  MessageFlags,
 } from 'discord.js';
 import { Db } from 'mongodb';
 import cron from 'node-cron';
 import logger from '../../../logger';
 
-interface Gossip {
+export interface Gossip {
   author: string;
   text: string;
   createdAt: string;
@@ -40,7 +41,7 @@ export class GossipCommand implements Command {
 
       if (messageContent.length >= 1000) {
         await interaction.reply({
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
@@ -59,7 +60,7 @@ export class GossipCommand implements Command {
           .findOne({ discordId: interaction.targetMessage.author.id }))
       ) {
         await interaction.reply({
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
@@ -87,7 +88,7 @@ export class GossipCommand implements Command {
         );
 
       await interaction.reply({
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
@@ -104,7 +105,7 @@ export class GossipCommand implements Command {
 
           if (!gossipContent) {
             await interaction.reply({
-              flags: ['Ephemeral'],
+              flags: [MessageFlags.Ephemeral],
               embeds: [
                 new EmbedBuilder()
                   .setColor('#FF8000')
@@ -121,7 +122,7 @@ export class GossipCommand implements Command {
               .findOne({ discordId: interaction.user.id })
           ) {
             await interaction.reply({
-              flags: ['Ephemeral'],
+              flags: [MessageFlags.Ephemeral],
               embeds: [
                 new EmbedBuilder()
                   .setColor('#FF8000')
@@ -142,7 +143,7 @@ export class GossipCommand implements Command {
           await this.gateway.mongoClient.collection<Gossip>('gossips').insertOne(gossip);
 
           await interaction.reply({
-            flags: ['Ephemeral'],
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor('#FF8000')
@@ -163,7 +164,7 @@ export class GossipCommand implements Command {
 
           if (gossips.length === 0) {
             await interaction.reply({
-              flags: ['Ephemeral'],
+              flags: [MessageFlags.Ephemeral],
               embeds: [
                 new EmbedBuilder()
                   .setColor('#FF8000')
@@ -191,7 +192,7 @@ export class GossipCommand implements Command {
           return this.removeGossipBoards(interaction);
         default:
           await interaction.reply({
-            flags: ['Ephemeral'],
+            flags: [MessageFlags.Ephemeral],
             embeds: [
               new EmbedBuilder()
                 .setColor('#FF8000')
@@ -212,7 +213,7 @@ export class GossipCommand implements Command {
 
     if (!interaction.channel?.isSendable()) {
       await interaction.reply({
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
@@ -252,7 +253,7 @@ export class GossipCommand implements Command {
     });
 
     await interaction.reply({
-      flags: ['Ephemeral'],
+      flags: [MessageFlags.Ephemeral],
       embeds: [
         new EmbedBuilder()
           .setColor('#FF8000')
@@ -272,7 +273,7 @@ export class GossipCommand implements Command {
       .deleteMany({ discordChannelId: interaction.channelId });
 
     await interaction.reply({
-      flags: ['Ephemeral'],
+      flags: [MessageFlags.Ephemeral],
       embeds: [
         new EmbedBuilder()
           .setColor('#FF8000')
@@ -316,7 +317,6 @@ export class GossipCommand implements Command {
         }
 
         await message.edit({
-          content: `Voici les dernières rumeurs (mis à jour ${time(new Date(), TimestampStyles.RelativeTime)}) :`,
           embeds:
             gossips.length > 0
               ? gossips.map((gossip) =>
@@ -328,6 +328,7 @@ export class GossipCommand implements Command {
                     .setDescription(gossip.text),
                 )
               : [],
+          content: `Voici les dernières rumeurs (mis à jour ${time(new Date(), TimestampStyles.RelativeTime)}) :`,
         });
 
         logger.debug('Message edited!');
@@ -378,7 +379,7 @@ export class GossipCommand implements Command {
           subcommand
             .setName('remove-boards')
             .setNameLocalization('fr', 'retirer-tableaux')
-            .setDescription('Supprime tous les tableaux des primes dans ce canal.'),
+            .setDescription('Supprime tous les tableaux des rumeurs dans ce canal.'),
         ),
       new ContextMenuCommandBuilder()
         .setName(this.name)

@@ -4,6 +4,7 @@ import {
   ChatInputCommandInteraction,
   ContextMenuCommandBuilder,
   EmbedBuilder,
+  MessageFlags,
   SharedSlashCommand,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -220,7 +221,7 @@ export class AiCommand implements Command {
     if (interaction.options.getSubcommand() === 'invoke') {
       if (!interaction.guildId) {
         await interaction.reply({
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
@@ -237,7 +238,7 @@ export class AiCommand implements Command {
 
       if (!channel || channel.type !== ChannelType.GuildVoice || !channel.guild) {
         await interaction.reply({
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
@@ -260,7 +261,7 @@ export class AiCommand implements Command {
       await instance.connect();
 
       await interaction.reply({
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
@@ -271,7 +272,7 @@ export class AiCommand implements Command {
     } else if (interaction.options.getSubcommand() === 'revoke') {
       if (!interaction.guildId) {
         await interaction.reply({
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
@@ -286,7 +287,7 @@ export class AiCommand implements Command {
       connection?.destroy();
 
       await interaction.reply({
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
@@ -299,7 +300,7 @@ export class AiCommand implements Command {
 
       if (!interaction.guildId) {
         await interaction.reply({
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
@@ -314,7 +315,7 @@ export class AiCommand implements Command {
 
       if (!connection) {
         await interaction.reply({
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor('#FF8000')
@@ -358,7 +359,7 @@ export class AiCommand implements Command {
       });
 
       await interaction.reply({
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
@@ -368,7 +369,7 @@ export class AiCommand implements Command {
       });
     } else {
       await interaction.reply({
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')

@@ -5,6 +5,7 @@ import {
   Events,
   GatewayIntentBits,
   Interaction,
+  MessageFlags,
   REST,
   Routes,
   SharedSlashCommand,
@@ -20,6 +21,7 @@ import { AiCommand } from './commands/ai.command';
 import { GossipCommand } from './commands/gossip.command';
 import { Db } from 'mongodb';
 import { UsersCommand } from './commands/users.command';
+import { EventsCommand } from './commands/events.command';
 
 interface DiscordBotAdapterGateway {
   mongoClient: Db;
@@ -53,6 +55,7 @@ export class DiscordBotAdapter {
       new AiCommand(),
       new GossipCommand({ mongoClient: this.gateway.mongoClient, client: this.client }),
       new UsersCommand({ mongoClient: this.gateway.mongoClient }),
+      new EventsCommand({ mongoClient: this.gateway.mongoClient, client: this.client }),
     ];
   }
 
@@ -80,7 +83,7 @@ export class DiscordBotAdapter {
       ) {
         await interaction.reply({
           content: 'You are blocked from using this application!',
-          ephemeral: true,
+          flags: [MessageFlags.Ephemeral],
         });
         return;
       }
@@ -91,7 +94,7 @@ export class DiscordBotAdapter {
         logger.error(`No command matching ${interaction.commandName} was found.`);
         await interaction.reply({
           content: 'This command does not exist!',
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
         });
         return;
       }
@@ -109,12 +112,64 @@ export class DiscordBotAdapter {
         if (interaction.replied || interaction.deferred) {
           await interaction.followUp({
             content: 'There was an error while executing this command!',
-            flags: ['Ephemeral'],
+            flags: [MessageFlags.Ephemeral],
           });
         } else {
           await interaction.reply({
             content: 'There was an error while executing this command!',
-            flags: ['Ephemeral'],
+            flags: [MessageFlags.Ephemeral],
+          });
+        }
+      }
+    });
+
+    this.client.on(Events.InteractionCreate, async (interaction) => {
+      if (!interaction.isMessageComponent()) {
+        return;
+      }
+
+      if (
+        await this.gateway.mongoClient
+          .collection('blocked-users')
+          .findOne({ discordId: interaction.user.id })
+      ) {
+        await interaction.reply({
+          content: 'You are blocked from using this application!',
+          flags: [MessageFlags.Ephemeral],
+        });
+        return;
+      }
+
+      const command = commandsMap.get(interaction.customId.split('-')[0]);
+
+      if (!command) {
+        logger.error(`No command matching ${interaction.customId} was found.`);
+        await interaction.reply({
+          content: 'This command does not exist!',
+          flags: [MessageFlags.Ephemeral],
+        });
+        return;
+      }
+
+      try {
+        await command.execute(interaction);
+      } catch (error: any) {
+        logger.error('Failed to execute command', {
+          error: {
+            message: error.message,
+            name: error.name,
+            stack: error.stack,
+          },
+        });
+        if (interaction.replied || interaction.deferred) {
+          await interaction.followUp({
+            content: 'There was an error while executing this command!',
+            flags: [MessageFlags.Ephemeral],
+          });
+        } else {
+          await interaction.reply({
+            content: 'There was an error while executing this command!',
+            flags: [MessageFlags.Ephemeral],
           });
         }
       }

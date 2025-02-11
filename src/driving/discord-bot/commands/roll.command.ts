@@ -3,10 +3,10 @@ import {
   ChatInputCommandInteraction,
   ContextMenuCommandBuilder,
   EmbedBuilder,
+  MessageFlags,
   SharedSlashCommand,
   SlashCommandBuilder,
 } from 'discord.js';
-import c from 'config';
 
 export class RollCommand implements Command {
   readonly name = 'roll';
@@ -18,7 +18,7 @@ export class RollCommand implements Command {
     if (!expression) {
       await interaction.reply({
         content: 'Expression de lancer invalide.',
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
       });
       return;
     }

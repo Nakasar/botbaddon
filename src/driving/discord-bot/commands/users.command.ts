@@ -1,5 +1,5 @@
 import { Command } from '../discord-bot.adapter';
-import { EmbedBuilder, Interaction, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, Interaction, MessageFlags, SlashCommandBuilder } from 'discord.js';
 import { Db } from 'mongodb';
 import config from 'config';
 
@@ -36,7 +36,7 @@ export class UsersCommand implements Command {
 
       if (!user) {
         await interaction.reply({
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor('Red')
@@ -52,7 +52,7 @@ export class UsersCommand implements Command {
       });
 
       await interaction.reply({
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor('Red')
@@ -65,7 +65,7 @@ export class UsersCommand implements Command {
 
       if (!user) {
         await interaction.reply({
-          flags: ['Ephemeral'],
+          flags: [MessageFlags.Ephemeral],
           embeds: [
             new EmbedBuilder()
               .setColor('Red')
@@ -81,7 +81,7 @@ export class UsersCommand implements Command {
       });
 
       await interaction.reply({
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor('Green')
@@ -91,7 +91,7 @@ export class UsersCommand implements Command {
       });
     } else {
       await interaction.reply({
-        flags: ['Ephemeral'],
+        flags: [MessageFlags.Ephemeral],
         embeds: [
           new EmbedBuilder()
             .setColor('#FF8000')
