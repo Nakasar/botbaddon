@@ -403,7 +403,7 @@ export class AiCommand implements Command {
           new EmbedBuilder()
             .setColor('#FF8000')
             .setTitle('Une voix par délà le voile...')
-            .setDescription(message.content),
+            .setDescription(message.text),
         ],
       });
     } else {
