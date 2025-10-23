@@ -372,7 +372,7 @@ export class AiCommand implements Command {
 
       await interaction.deferReply({});
 
-      const result = await fetch(`https://api.breign.eu/agents/${config.get<string>('services.avatar.agentId')}/prompts`, {
+      const result = await fetch(`https://api.breign.eu/agents/${config.get<string>('services.avatar.brainId')}/prompts`, {
         method: 'POST',
         headers: {
           'x-api-key': config.get<string>('services.avatar.apiKey'),
