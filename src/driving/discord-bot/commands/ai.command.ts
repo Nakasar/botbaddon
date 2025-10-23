@@ -373,7 +373,7 @@ export class AiCommand implements Command {
       await interaction.reply({
           embeds: [
             new EmbedBuilder()
-              .setColor('#3d25a5ff')
+              .setColor('#3d25a5')
               .setTitle(`${interaction.user.username} demande...`)
               .setDescription(question),
           ],
@@ -395,7 +395,7 @@ export class AiCommand implements Command {
         await interaction.followUp({
           embeds: [
             new EmbedBuilder()
-              .setColor('#8f0746ff')
+              .setColor('#8f0746')
               .setTitle('Une voix par délà le voile...')
               .setDescription("De mauvaises ondes interfèrent avec les Brumes... Isgarren doit veiller..."),
           ],
@@ -406,7 +406,7 @@ export class AiCommand implements Command {
       await interaction.followUp({
         embeds: [
           new EmbedBuilder()
-            .setColor('#8f0746ff')
+            .setColor('#8f0746')
             .setTitle('Une voix par délà le voile...')
             .setDescription(message.text),
         ],
