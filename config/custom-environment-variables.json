@@ -18,7 +18,8 @@
     },
     "avatar": {
       "agentId": "SERVICES__AVATAR__AGENT_ID",
-      "agentSecret": "SERVICES__AVATAR__AGENT_SECRET"
+      "agentSecret": "SERVICES__AVATAR__AGENT_SECRET",
+      "instanceId": "SERVICES__AVATAR__INSTANCE_ID"
     },
     "kalendar": {
       "endpoint": "SERVICES__KALENDAR__ENDPOINT"

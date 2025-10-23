@@ -367,6 +367,45 @@ export class AiCommand implements Command {
             .setDescription("L'avatar s'exprime..."),
         ],
       });
+    } else if (interaction.options.getSubcommand() === 'ask') {
+      const question = interaction.options.getString('question', true);
+
+      await interaction.deferReply({});
+
+      const result = await fetch(`https://api.breign.eu/agents/${config.get<string>('services.avatar.agentId')}/prompts`, {
+        method: 'POST',
+        headers: {
+          'x-api-key': config.get<string>('services.avatar.apiKey'),
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: question,
+          lang: 'fr',
+        }),
+      });
+
+      if (!result.ok) {
+        await interaction.editReply({
+          embeds: [
+            new EmbedBuilder()
+              .setColor('#FF8000')
+              .setTitle('Une voix par délà le voile...')
+              .setDescription("De mauvaises ondes interfèrent avec les Brumes... Isgarren doit veiller..."),
+          ],
+        });
+      }
+      const message = await result.json();
+
+      console.log({ message });
+
+      await interaction.editReply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor('#FF8000')
+            .setTitle('Une voix par délà le voile...')
+            .setDescription(message.content),
+        ],
+      });
     } else {
       await interaction.reply({
         flags: [MessageFlags.Ephemeral],
@@ -415,6 +454,22 @@ export class AiCommand implements Command {
                 .setRequired(true),
             )
             .setDescription("Faire parler l'avatar."),
+        )
+        .addSubcommand((subcommand) =>
+          subcommand
+            .setName('ask')
+            .setNameLocalization('fr', 'demander')
+            .addStringOption((option) =>
+              option
+                .setName('question')
+                .setNameLocalizations({
+                  fr: 'question',
+                })
+                .setDescription('Votre question')
+                .setRequired(true),
+            )
+            .setDescription("Ask something to Bot'Baddon")
+            .setDescriptionLocalization('fr', "Demander quelque chose à Bot'Baddon"),
         )
         .setDescription('Conjure la puissance des Secrets.'),
     ];
