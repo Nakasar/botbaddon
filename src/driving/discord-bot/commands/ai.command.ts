@@ -370,7 +370,14 @@ export class AiCommand implements Command {
     } else if (interaction.options.getSubcommand() === 'ask') {
       const question = interaction.options.getString('question', true);
 
-      await interaction.deferReply({});
+      await interaction.reply({
+          embeds: [
+            new EmbedBuilder()
+              .setColor('#3d25a5ff')
+              .setTitle(`${interaction.user.username} demande...`)
+              .setDescription(question),
+          ],
+        });
 
       const result = await fetch(`https://api.breign.eu/agents/${config.get<string>('services.avatar.brainId')}/prompts`, {
         method: 'POST',
@@ -385,10 +392,10 @@ export class AiCommand implements Command {
       });
 
       if (!result.ok) {
-        await interaction.editReply({
+        await interaction.followUp({
           embeds: [
             new EmbedBuilder()
-              .setColor('#FF8000')
+              .setColor('#8f0746ff')
               .setTitle('Une voix par délà le voile...')
               .setDescription("De mauvaises ondes interfèrent avec les Brumes... Isgarren doit veiller..."),
           ],
@@ -396,12 +403,10 @@ export class AiCommand implements Command {
       }
       const message = await result.json();
 
-      console.log({ message });
-
-      await interaction.editReply({
+      await interaction.followUp({
         embeds: [
           new EmbedBuilder()
-            .setColor('#FF8000')
+            .setColor('#8f0746ff')
             .setTitle('Une voix par délà le voile...')
             .setDescription(message.text),
         ],
